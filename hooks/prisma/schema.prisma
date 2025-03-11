@@ -25,14 +25,15 @@ model Zip {
   triggerId String
   trigger   Trigger?
   actions   Action[]
+  zipRun    ZipRun[]
 }
 
 model Trigger {
-  id        String   @id @default(uuid())
-  zipId     String   @unique
+  id        String            @id @default(uuid())
+  zipId     String            @unique
   triggerId String
   type      AvailableTriggers @relation(fields: [triggerId], references: [id])
-  zip       Zip @relation(fields: [zipId], references: [id])
+  zip       Zip               @relation(fields: [zipId], references: [id])
 }
 
 model AvailableTriggers {
@@ -55,3 +56,18 @@ model AvalaibleAction {
   name     String
   actions  Action[]
 }
+
+model ZipRun {
+  id           String   @id @default(uuid())
+  zipId        String
+  zip          Zip      @relation(fields: [zipId], references: [id])
+  metadata     Json
+  zipRunOutbox ZipRunOutbox?
+}
+
+model ZipRunOutbox {
+  id        String   @id @default(uuid())
+  zipRunId  String   @unique
+  zipRun    ZipRun   @relation(fields: [zipRunId], references: [id])
+}
+
