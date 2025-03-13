@@ -48,7 +48,7 @@ model Action {
   zip       Zip                @relation(fields: [zipId], references: [id])
   actionId  String
   type      AvalaibleAction    @relation(fields: [actionId], references: [id])
-
+  sortingOrder Int             @default(0)
 }
 
 model AvalaibleAction {

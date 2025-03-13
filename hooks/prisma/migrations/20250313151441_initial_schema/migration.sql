@@ -38,6 +38,7 @@ CREATE TABLE "Action" (
     "id" TEXT NOT NULL,
     "zipId" TEXT NOT NULL,
     "actionId" TEXT NOT NULL,
+    "sortingOrder" INTEGER NOT NULL DEFAULT 0,
 
     CONSTRAINT "Action_pkey" PRIMARY KEY ("id")
 );
