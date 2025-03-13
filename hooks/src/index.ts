@@ -30,7 +30,6 @@ app.post("/hooks/catch/:userId/:zipId", async(req, res) => {
         message: "webhook received"
     })
 
-    // push it to a queue
 }) 
 
-app.listen(3000);
+app.listen(3002);

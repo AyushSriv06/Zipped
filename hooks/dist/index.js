@@ -16,24 +16,28 @@ const express_1 = __importDefault(require("express"));
 const client_1 = require("@prisma/client");
 const client = new client_1.PrismaClient();
 const app = (0, express_1.default)();
+app.use(express_1.default.json());
 app.post("/hooks/catch/:userId/:zipId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = req.params.userId;
     const zipId = req.params.zipId;
     const body = req.body;
     // store in a db a new trigger
     yield client.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-        const run = yield client.zipRun.create({
+        const run = yield tx.zipRun.create({
             data: {
                 zipId: zipId,
                 metadata: body
             }
         });
-        yield client.zipRunOutbox.create({
+        yield tx.zipRunOutbox.create({
             data: {
                 zipRunId: run.id
             }
         });
     }));
+    res.json({
+        message: "webhook received"
+    });
     // push it to a queue
 }));
 app.listen(3000);
