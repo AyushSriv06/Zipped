@@ -38,6 +38,5 @@ app.post("/hooks/catch/:userId/:zipId", (req, res) => __awaiter(void 0, void 0, 
     res.json({
         message: "webhook received"
     });
-    // push it to a queue
 }));
-app.listen(3000);
+app.listen(3002);

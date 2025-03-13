@@ -14,66 +14,59 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id       String   @id @default(uuid())
   name     String
-  email    String
+  email    String   @unique
   password String
-  zips     Zip[]
 }
 
 model Zip {
-  id           String  @id @default(uuid())
-  triggerId    String
-  userId       Int
-  trigger      Trigger?
-  actions      Action[]
-  zapRuns      ZipRun[]
-  user         User @relation(fields: [userId], references: [id])
+  id        String   @id @default(uuid())
+  triggerId String
+  trigger   Trigger?
+  actions   Action[]
+  zipRuns   ZipRun[]
 }
 
 model Trigger {
-  id          String  @id @default(uuid())
-  zipId       String  @unique
-  triggerId   String
-  metadata    Json  @default("{}")
-  type  AvailableTrigger @relation(fields: [triggerId], references: [id])
-  zip  Zip                @relation(fields: [zipId], references: [id])
-}
-
-model Action {
-  id        String  @id @default(uuid())
-  zipId     String  
-  zip       Zip     @relation(fields: [zipId], references: [id])
-  actionId  String
-  metadata    Json  @default("{}")
-  type      AvailableAction @relation(fields: [actionId], references: [id])
-  sortingOrder Int    @default(0)
-}
-
-model AvailableAction {
-  id       String @id @default(uuid())
-  name     String
-  image    String
-  actions  Action[]
+  id        String            @id @default(uuid())
+  zipId     String            @unique
+  triggerId String
+  type      AvailableTrigger  @relation(fields: [triggerId], references: [id])
+  zip       Zip               @relation(fields: [zipId], references: [id])
 }
 
 model AvailableTrigger {
-  id       String @id @default(uuid())
-  name     String 
-  image    String
-  triggers Trigger[]
+  id       String   @id @default(uuid())
+  name     String
+  triggers  Trigger[]
+}
+
+model Action {
+  id        String             @id @default(uuid())
+  zipId     String
+  zip       Zip                @relation(fields: [zipId], references: [id])
+  actionId  String
+  type      AvalaibleAction    @relation(fields: [actionId], references: [id])
+
+}
+
+model AvalaibleAction {
+  id       String   @id @default(uuid())
+  name     String
+  actions  Action[]
 }
 
 model ZipRun {
   id           String @id @default(uuid())
   zipId        String
   metadata     Json
-  zip          Zip    @relation(fields: [zipId], references: [id])
-  zapRunOutbox ZipRunOutbox?
+  zip          Zip @relation(fields: [zipId], references: [id])
+  zipRunOutbox ZipRunOutbox?
 }
 
 model ZipRunOutbox {
-  id          String @id @default(uuid())
-  zipRunId    String @unique
-  zipRun      ZipRun @relation(fields: [zipRunId], references: [id])
+  id           String @id @default(uuid())
+  zipRunId     String @unique
+  zipRun       ZipRun @relation(fields: [zipRunId], references: [id])
 }
