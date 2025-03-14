@@ -8,7 +8,7 @@ const router = Router();
 
 //@ts-ignore
 router.post("/signup", async (req, res) => {
-    const body = req.body.username;
+    const body = req.body;
     const parsedData = SignUpSchema.safeParse(body);
    
     if(!parsedData.success) {
@@ -42,7 +42,7 @@ router.post("/signup", async (req, res) => {
 
 //@ts-ignore
 router.post("/signin", async(req, res) => {
-    const body = req.body.username;
+    const body = req.body;
     const parsedData = SignInSchema.safeParse(body);
    
     if(!parsedData.success) {
@@ -70,7 +70,7 @@ router.post("/signin", async(req, res) => {
 })
 
 //@ts-ignore
-router.post("/user", authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
     //@ts-ignore
 
     const id = req.id;

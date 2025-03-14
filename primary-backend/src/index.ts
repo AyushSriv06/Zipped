@@ -9,4 +9,6 @@ app.use(cors());
 
 app.use("/api/v1/user", userRouter);
 
-app.use("app/v1/zap", zipRouter);
+app.use("app/v1/zip", zipRouter);
+
+app.listen(3000);
