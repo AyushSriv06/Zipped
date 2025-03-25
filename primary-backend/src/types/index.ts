@@ -9,7 +9,6 @@ export const SignUpSchema = z.object({
 export const SignInSchema = z.object({
     username: z.string(),
     password: z.string(),
-    name: z.string().min(3)
 })
 
 export const ZipCreateSchema = z.object({

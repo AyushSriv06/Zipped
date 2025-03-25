@@ -46,6 +46,10 @@ router.post("/", authMiddleware, async (req, res) => {
         })
     })
 
+    return res.json({
+        message: "Zip created successfully",
+    })
+
 })
 
 //@ts-ignore
@@ -101,7 +105,8 @@ router.get("/:zipId", authMiddleware, async(req,res) => {
     
     return res.json({
         zip
-    })
-})
+    });
 
+})
+  
 export const zipRouter = router;

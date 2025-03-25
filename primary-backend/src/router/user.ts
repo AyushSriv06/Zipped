@@ -3,6 +3,7 @@ import { SignInSchema, SignUpSchema } from "../types";
 import { prismaClient } from "../db";
 import jwt from "jsonwebtoken"
 import { JWT_PASSWORD } from "../config";
+import { authMiddleware } from "../authMiddleware";
 
 const router = Router();
 
