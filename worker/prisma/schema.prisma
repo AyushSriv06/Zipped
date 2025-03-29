@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  name     String
+  email    String   @unique
+  password String
+  zips     Zip[]
+}
+
+model Zip {
+  id        String   @id @default(uuid())
+  triggerId String
+  userId    Int
+  trigger   Trigger?
+  actions   Action[]
+  zipRuns   ZipRun[]
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model Trigger {
+  id        String            @id @default(uuid())
+  zipId     String            @unique
+  triggerId String
+  type      AvailableTrigger  @relation(fields: [triggerId], references: [id])
+  zip       Zip               @relation(fields: [zipId], references: [id])
+}
+
+model AvailableTrigger {
+  id       String   @id @default(uuid())
+  name     String
+  image    String
+  triggers  Trigger[]
+}
+
+model Action {
+  id        String             @id @default(uuid())
+  zipId     String
+  zip       Zip                @relation(fields: [zipId], references: [id])
+  actionId  String
+  metadata  Json               @default("{}")
+  type      AvalaibleAction    @relation(fields: [actionId], references: [id])
+  sortingOrder Int             @default(0)
+}
+
+model AvalaibleAction {
+  id       String   @id @default(uuid())
+  name     String
+  image    String
+  actions  Action[]
+}
+
+model ZipRun {
+  id           String @id @default(uuid())
+  zipId        String
+  metadata     Json
+  zip          Zip @relation(fields: [zipId], references: [id])
+  zipRunOutbox ZipRunOutbox?
+}
+
+model ZipRunOutbox {
+  id           String @id @default(uuid())
+  zipRunId     String @unique
+  zipRun       ZipRun @relation(fields: [zipRunId], references: [id])
+}
