@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
+import { JsonObject } from "@prisma/client/runtime/library";
 import {Kafka} from "kafkajs"
+import { parse } from "./parser";
 
 
 const TOPIC_NAME = "zip-events2"
@@ -61,19 +63,26 @@ async function main() {
                 }
             });
 
-            const curretAction = zipRunDetails?.zip.actions.find(x => x.sortingOrder === stage);
+            const currentAction = zipRunDetails?.zip.actions.find(x => x.sortingOrder === stage);
 
-            if(!curretAction) {
+            if(!currentAction) {
                 console.log("Current action can't be found");
                 return
             }
 
-            if(curretAction.type.id === "email") {
+            const zipRunMetadata = zipRunDetails?.metadata;
+
+            if(currentAction.type.id === "email") {
                 console.log("Sending out an email")
+                const body = parse((currentAction.metadata as JsonObject)?.body as string, zipRunMetadata);
+                const to = parse((currentAction.metadata as JsonObject)?.body as string, zipRunMetadata);
+                console.log(`Sending out email to ${to} body is ${body}`)
             }
 
-            if(curretAction.type.id === "send-sol") {
-                console.log("Sending out solana")
+            if(currentAction.type.id === "send-sol") {
+                const amount = parse((currentAction.metadata as JsonObject)?.amount as string, zipRunMetadata);
+                const address = parse((currentAction.metadata as JsonObject)?.address as string, zipRunMetadata);
+                console.log(`Sending out SOL of ${amount} to address ${address}`)
             }
  
             await new Promise(r => setTimeout(r, 5000));
