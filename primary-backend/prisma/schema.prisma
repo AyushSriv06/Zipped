@@ -51,6 +51,7 @@ model Action {
   zipId     String
   zip       Zip                @relation(fields: [zipId], references: [id])
   actionId  String
+  metadata  Json               @default("{}")
   type      AvalaibleAction    @relation(fields: [actionId], references: [id])
   sortingOrder Int             @default(0)
 }

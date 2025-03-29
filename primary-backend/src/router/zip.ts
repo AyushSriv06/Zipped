@@ -16,7 +16,7 @@ router.post("/", authMiddleware, async (req, res) => {
         return res.status(400).json({ error: "Invalid request body" });
     }
 
-    await prismaClient.$transaction( async tx => {
+    const zipId = await prismaClient.$transaction( async tx => {
         const zip = await prismaClient.zip.create({
             data: {
                 userId: id,
@@ -24,15 +24,18 @@ router.post("/", authMiddleware, async (req, res) => {
                 actions: {
                     create: parsedData.data.actions.map((x, index) => ({
                         actionId: x.availableActionId,
-                        sortingOrder: index
+                        sortingOrder: index,
+                        metadata: x.actionMetadata
                     }))
                 }
             }
         })
         const trigger = await tx.trigger.create({
+            //@ts-ignore
             data: {
                 triggerId: parsedData.data.availableTriggerId,
                 zipId: zip.id
+
             }
         });
 
