@@ -35,14 +35,15 @@ model Trigger {
   id        String            @id @default(uuid())
   zipId     String            @unique
   triggerId String
-  type      AvailableTriggers @relation(fields: [triggerId], references: [id])
+  type      AvailableTrigger  @relation(fields: [triggerId], references: [id])
   zip       Zip               @relation(fields: [zipId], references: [id])
 }
 
-model AvailableTriggers {
+model AvailableTrigger {
   id       String   @id @default(uuid())
   name     String
-  trigger  Trigger[]
+  image    String
+  triggers  Trigger[]
 }
 
 model Action {
@@ -50,27 +51,28 @@ model Action {
   zipId     String
   zip       Zip                @relation(fields: [zipId], references: [id])
   actionId  String
+  metadata  Json               @default("{}")
   type      AvalaibleAction    @relation(fields: [actionId], references: [id])
-
+  sortingOrder Int             @default(0)
 }
 
 model AvalaibleAction {
   id       String   @id @default(uuid())
   name     String
+  image    String
   actions  Action[]
 }
 
 model ZipRun {
-  id           String   @id @default(uuid())
+  id           String @id @default(uuid())
   zipId        String
-  zip          Zip      @relation(fields: [zipId], references: [id])
   metadata     Json
+  zip          Zip @relation(fields: [zipId], references: [id])
   zipRunOutbox ZipRunOutbox?
 }
 
 model ZipRunOutbox {
-  id        String   @id @default(uuid())
-  zipRunId  String   @unique
-  zipRun    ZipRun   @relation(fields: [zipRunId], references: [id])
+  id           String @id @default(uuid())
+  zipRunId     String @unique
+  zipRun       ZipRun @relation(fields: [zipRunId], references: [id])
 }
-

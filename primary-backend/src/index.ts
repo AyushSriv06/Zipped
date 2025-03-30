@@ -17,4 +17,4 @@ app.use("app/v1/trigger", triggerRouter);
 
 app.use("app/v1/action", actionRouter);
 
-app.listen(3003);
+app.listen(3000);
