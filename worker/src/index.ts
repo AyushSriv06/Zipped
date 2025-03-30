@@ -2,6 +2,9 @@ import { PrismaClient } from "@prisma/client"
 import { JsonObject } from "@prisma/client/runtime/library";
 import {Kafka} from "kafkajs"
 import { parse } from "./parser";
+import { sendEmail } from "./email";
+import { sendSol } from "./solana";
+require('dotenv').config()
 
 
 const TOPIC_NAME = "zip-events2"
@@ -76,13 +79,16 @@ async function main() {
                 console.log("Sending out an email")
                 const body = parse((currentAction.metadata as JsonObject)?.body as string, zipRunMetadata);
                 const to = parse((currentAction.metadata as JsonObject)?.body as string, zipRunMetadata);
-                console.log(`Sending out email to ${to} body is ${body}`)
+                const subject = parse((currentAction.metadata as JsonObject)?.body as string, zipRunMetadata);
+                console.log(`Sending out email to ${to} body is ${body} subject is ${subject}`);
+                await sendEmail(to, body, subject);
             }
 
             if(currentAction.type.id === "send-sol") {
                 const amount = parse((currentAction.metadata as JsonObject)?.amount as string, zipRunMetadata);
                 const address = parse((currentAction.metadata as JsonObject)?.address as string, zipRunMetadata);
-                console.log(`Sending out SOL of ${amount} to address ${address}`)
+                console.log(`Sending out SOL of ${amount} to address ${address}`);
+                await sendSol(amount, address);
             }
  
             await new Promise(r => setTimeout(r, 5000));
